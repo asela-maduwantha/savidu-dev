@@ -9,23 +9,23 @@ const { Title } = Typography;
 const Profile = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [adminRole, setAdminRole] = useState('');
+  const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [editingField, setEditingField] = useState(null);
   const [showPasswordFields, setShowPasswordFields] = useState(false);
   const [passwordForm] = Form.useForm();
   const navigate = useNavigate();
-  const email = sessionStorage.getItem('email');
+  const sessionEmail = sessionStorage.getItem('email');
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (email) {
+      if (sessionEmail) {
         try {
-          const response = await axios.get('http://localhost:8000/get-admin-data', { params: { email } });
-          const { FirstName, LastName, AdminRole } = response.data;
+          const response = await axios.get('http://localhost:8000/get-admin-data', { params: { email: sessionEmail } });
+          const { FirstName, LastName, Email } = response.data;
           setFirstName(FirstName);
           setLastName(LastName);
-          setAdminRole(AdminRole);
+          setEmail(Email);
         } catch (error) {
           message.error('Failed to load profile data');
         }
@@ -33,12 +33,12 @@ const Profile = () => {
     };
 
     fetchProfile();
-  }, [email]);
+  }, [sessionEmail]);
 
   const onUpdateProfile = async () => {
     setLoading(true);
     try {
-      await axios.put('http://localhost:8000/update-admin', { email, firstName, lastName, adminRole });
+      await axios.put('http://localhost:8000/update-admin', { email: sessionEmail, firstName, lastName });
       message.success('Profile updated successfully');
       setEditingField(null);
     } catch (error) {
@@ -51,7 +51,7 @@ const Profile = () => {
   const onChangePassword = async (values) => {
     setLoading(true);
     try {
-      await axios.put('http://localhost:8000/update-admin-password', { email, ...values });
+      await axios.put('http://localhost:8000/update-admin-password', { email: sessionEmail, ...values });
       message.success('Password changed successfully');
       passwordForm.resetFields();
       setShowPasswordFields(false);
@@ -73,7 +73,7 @@ const Profile = () => {
         <Form
           onFinish={onUpdateProfile}
           style={styles.form}
-          initialValues={{ firstName, lastName, adminRole }}
+          initialValues={{ firstName, lastName, email }}
         >
           <Form.Item
             label="First Name"
@@ -96,7 +96,6 @@ const Profile = () => {
           <Form.Item
             label="Last Name"
             name="lastName"
-           
             rules={[{ required: true, message: 'Please input your Last Name!' }]}
           >
             <Input
@@ -113,21 +112,14 @@ const Profile = () => {
           </Form.Item>
 
           <Form.Item
-            label="Admin Role"
-            name="adminRole"
+            label="Email"
+            name="email"
           
-            rules={[{ required: true, message: 'Please input your Admin Role!' }]}
           >
             <Input
-              placeholder={adminRole}
+              placeholder={email}
               style={styles.input}
-              disabled={editingField !== 'adminRole'}
-              suffix={
-                editingField !== 'adminRole' && (
-                  <EditOutlined onClick={() => handleEdit('adminRole')} style={styles.editIcon} />
-                )
-              }
-              onChange={(e) => setAdminRole(e.target.value)}
+              disabled={true}
             />
           </Form.Item>
 

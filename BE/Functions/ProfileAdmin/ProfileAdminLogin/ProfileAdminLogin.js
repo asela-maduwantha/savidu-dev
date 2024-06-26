@@ -29,7 +29,7 @@ async function profileAdminLogin(req, res) {
             }
            }
             
-            return res.status(200).send("Login successful.");
+            return res.status(200).json("Login successful.");
         });
     } catch (error) {
         console.error("Error in profileAdminLogin:", error);

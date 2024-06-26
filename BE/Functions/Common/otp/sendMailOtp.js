@@ -14,7 +14,7 @@ module.exports = async function sendMailOtp(req, res) {
         const queryInsertOtp = 'INSERT INTO parttime_srilanka.otp (user, otp) VALUES (?, ?);';
 
         const { email } = req.body;
-
+       
         // Check if the admin exists
         let admin = await queryAsync(queryAdmin, [email]);
 

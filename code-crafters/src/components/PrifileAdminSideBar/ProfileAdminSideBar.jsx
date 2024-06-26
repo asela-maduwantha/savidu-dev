@@ -21,7 +21,7 @@ const ProfileAdminSideBar = () => {
   };
 
   return (
-    <div className="siderbar-container">
+    <div className="siderbar-container" >
       <Layout style={{ width: "15%", backgroundColor: "white" }}>
         <Sider
           theme=""
